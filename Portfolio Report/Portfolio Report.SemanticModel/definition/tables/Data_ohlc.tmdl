@@ -1,0 +1,100 @@
+table Data_ohlc
+	lineageTag: 11854725-b7a7-4d71-be47-6043e10eed47
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3b7f6b98-37c4-4625-8537-9a1bc88cbdd4
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ticker
+		dataType: string
+		lineageTag: 22290f73-006c-4105-b421-492829669756
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column open
+		dataType: double
+		lineageTag: 4399ff04-9560-4831-aa60-904897709bea
+		summarizeBy: sum
+		sourceColumn: open
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column high
+		dataType: double
+		lineageTag: 5f0e8ae8-fb76-4096-bc2d-06cbc99167b7
+		summarizeBy: sum
+		sourceColumn: high
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column low
+		dataType: double
+		lineageTag: 0d5dcd46-d3da-47f7-b2a9-c61de3315d7a
+		summarizeBy: sum
+		sourceColumn: low
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column close
+		dataType: double
+		lineageTag: a251ef79-59f7-41f4-acc6-c12755f05ed9
+		summarizeBy: sum
+		sourceColumn: close
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column volume
+		dataType: double
+		lineageTag: 32e87a5a-909d-4eba-b646-46bd3bc86ca9
+		summarizeBy: sum
+		sourceColumn: volume
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column daily_return
+		dataType: double
+		lineageTag: 4bc68f7f-c28b-452f-b7e3-202f1a6da59e
+		summarizeBy: sum
+		sourceColumn: daily_return
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Data_ohlc = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("aws-0-us-west-2.pooler.supabase.com", "postgres"),
+				    public_portfolio_ohlc_data = Source{[Schema="public",Item="portfolio_ohlc_data"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(public_portfolio_ohlc_data,{"id"}),
+				    #"Sorted Rows" = Table.Sort(#"Removed Columns",{{"date", Order.Ascending}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Sorted Rows", {"date", "ticker"}, #"public v_daily_return", {"date", "ticker"}, "public v_daily_return", JoinKind.LeftOuter),
+				    #"Expanded public v_daily_return" = Table.ExpandTableColumn(#"Merged Queries", "public v_daily_return", {"daily_return"}, {"public v_daily_return.daily_return"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Expanded public v_daily_return",{{"public v_daily_return.daily_return", "daily_return"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

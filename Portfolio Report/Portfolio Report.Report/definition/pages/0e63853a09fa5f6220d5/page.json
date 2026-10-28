@@ -1,0 +1,120 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "0e63853a09fa5f6220d5",
+  "displayName": "Portfolio Time Intelligence",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "d73e6c338102b2052835",
+      "target": "de80e76ab4811569f5f7",
+      "type": "DataFilter"
+    },
+    {
+      "source": "d73e6c338102b2052835",
+      "target": "5ee2e16f61231c99510c",
+      "type": "DataFilter"
+    },
+    {
+      "source": "6263edd009478bd96c11",
+      "target": "5ee2e16f61231c99510c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "6263edd009478bd96c11",
+      "target": "de80e76ab4811569f5f7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "56ebc1628b370e2a72b7",
+      "target": "5ee2e16f61231c99510c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "56ebc1628b370e2a72b7",
+      "target": "de80e76ab4811569f5f7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d73e6c338102b2052835",
+      "target": "6263edd009478bd96c11",
+      "type": "NoFilter"
+    },
+    {
+      "source": "56ebc1628b370e2a72b7",
+      "target": "6263edd009478bd96c11",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d73e6c338102b2052835",
+      "target": "56ebc1628b370e2a72b7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "5ee2e16f61231c99510c",
+      "target": "de80e76ab4811569f5f7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "5ee2e16f61231c99510c",
+      "target": "6263edd009478bd96c11",
+      "type": "NoFilter"
+    },
+    {
+      "source": "af2d9640727e171c101b",
+      "target": "de80e76ab4811569f5f7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "af2d9640727e171c101b",
+      "target": "5ee2e16f61231c99510c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "af2d9640727e171c101b",
+      "target": "d73e6c338102b2052835",
+      "type": "NoFilter"
+    },
+    {
+      "source": "af2d9640727e171c101b",
+      "target": "6263edd009478bd96c11",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d73e6c338102b2052835",
+      "target": "af2d9640727e171c101b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "6263edd009478bd96c11",
+      "target": "af2d9640727e171c101b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "6263edd009478bd96c11",
+      "target": "56ebc1628b370e2a72b7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "af2d9640727e171c101b",
+      "target": "56ebc1628b370e2a72b7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "56ebc1628b370e2a72b7",
+      "target": "af2d9640727e171c101b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "56ebc1628b370e2a72b7",
+      "target": "d73e6c338102b2052835",
+      "type": "NoFilter"
+    },
+    {
+      "source": "6263edd009478bd96c11",
+      "target": "d73e6c338102b2052835",
+      "type": "NoFilter"
+    }
+  ]
+}

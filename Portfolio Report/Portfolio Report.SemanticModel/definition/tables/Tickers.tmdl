@@ -1,0 +1,55 @@
+table Tickers
+	lineageTag: fd974b30-03f9-4b6a-9a4a-22adb11e35aa
+
+	column ticker
+		dataType: string
+		lineageTag: a36f67ee-fba1-4980-8325-232f7a007580
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: c5e559cf-b072-43a2-9ec4-7fc5f5a38f3e
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column sector
+		dataType: string
+		lineageTag: 6534292a-bf1a-43df-baf5-0d6d32c91fc1
+		summarizeBy: none
+		sourceColumn: sector
+
+		annotation SummarizationSetBy = Automatic
+
+	column industry
+		dataType: string
+		lineageTag: 4c8f694e-de5c-4fd1-a219-d724827df039
+		summarizeBy: none
+		sourceColumn: industry
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type = IF(ISBLANK(Tickers[sector]) && ISBLANK(Tickers[industry]), "Benchmark", "Stock")
+		lineageTag: f58a7030-0702-46be-ad5f-3138500ad381
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Tickers = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("aws-0-us-west-2.pooler.supabase.com", "postgres"),
+				    public_company_data = Source{[Schema="public",Item="company_data"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(public_company_data,{"id"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

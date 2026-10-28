@@ -1,0 +1,14 @@
+expression 'public v_daily_return' =
+		let
+		    Source = PostgreSQL.Database("aws-0-us-west-2.pooler.supabase.com", "postgres"),
+		    public_v_daily_return = Source{[Schema="public",Item="v_daily_return"]}[Data],
+		    #"Sorted Rows" = Table.Sort(public_v_daily_return,{{"date", Order.Ascending}}),
+		    #"Removed Columns" = Table.RemoveColumns(#"Sorted Rows",{"close", "prev_close"})
+		in
+		    #"Removed Columns"
+	lineageTag: b2a1bb65-9ad8-4253-b2ee-93aa10c51437
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

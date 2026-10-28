@@ -1,0 +1,8 @@
+relationship AutoDetected_7db31aab-c2ae-4496-b116-1a4ef1672a2b
+	fromColumn: Data_ohlc.ticker
+	toColumn: Tickers.ticker
+
+relationship 171d17c7-1f47-9dff-9b43-d3bc88d15498
+	fromColumn: Data_ohlc.date
+	toColumn: Date.Date
+

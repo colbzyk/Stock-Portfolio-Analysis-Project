@@ -1,0 +1,785 @@
+table _Measures
+	lineageTag: b518d0bb-b201-4d7b-97aa-1cd8d72b5fdc
+
+	measure 'Total Return' = ```
+			
+			
+			VAR startDate =
+			    CALCULATE(
+			        MIN(Data_ohlc[date]),
+			        ALLSELECTED('Date')
+			    )
+			    
+			VAR endDate = MAX(Data_ohlc[date])
+			
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = startDate
+			    )
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = endDate
+			    )
+			
+			RETURN IF(NOT ISBLANK(maxValue) && NOT ISBLANK(minValue),
+			    DIVIDE(maxValue, minValue)-1)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: 132fced5-277c-4328-8aac-b94a4c89dae2
+
+	measure 'YTD Return' =
+			
+			
+			VAR curDate =
+			    CALCULATE(
+			        MAX(Data_ohlc[date]),
+			        REMOVEFILTERS('Date')
+			    )
+			
+			var curYear = YEAR(curDate)
+			
+			var minDate = CALCULATE(
+			    MIN('Data_ohlc'[date]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Year] = curYear
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = minDate
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = curDate)
+			
+			RETURN DIVIDE(maxValue, minValue)-1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: 6f55bff4-8e67-45e7-8558-8d674e22135a
+
+	measure '1Year Return' =
+			
+			
+			VAR curDate = MAX(Data_ohlc[date])
+			
+			var prevYearTarget = EDATE(curDate, -12)
+			
+			var prevYear = CALCULATE(
+			    MIN(Data_ohlc[date]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] >= prevYearTarget,
+			    Data_ohlc[date] <= curDate
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = prevYear
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = curDate
+			)
+			
+			RETURN IF(NOT ISBLANK(maxValue) && NOT ISBLANK(minValue),
+			    DIVIDE(maxValue, minValue)-1)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: a7913075-1bf1-4504-a8ae-562d71002d87
+
+	measure '1Month Return' = ```
+			
+			
+			 VAR curDate =
+			    CALCULATE(
+			        MAX('Date'[Date]),
+			        REMOVEFILTERS('Date')
+			    )
+			
+			var prevMonthTarget = EDATE(curDate, -1)
+			
+			var prevMonth = CALCULATE(
+			    MIN('Date'[Date]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] >= prevMonthTarget
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = prevMonth
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = curDate
+			)
+			
+			RETURN DIVIDE(maxValue, minValue)-1
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: 0b5035d1-3984-4df2-ac4d-b782c26eae38
+
+	measure '3Month Return' =
+			
+			
+			VAR curDate =
+			    CALCULATE(
+			        MAX('Date'[Date]),
+			        REMOVEFILTERS('Date')
+			    )
+			
+			var prevMonthsTarget = EDATE(curDate, -3)
+			
+			var prevMonths = CALCULATE(
+			    MIN('Date'[Date]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] >= prevMonthsTarget
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = prevMonths
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    'Date'[Date] = curDate
+			)
+			
+			RETURN DIVIDE(maxValue, minValue)-1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: b15ad124-6697-46d1-98ce-da2effddb53d
+
+	measure 'Portfolio Total Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [Total Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: ebb0d3f3-db29-462a-916e-3e78a6e48be5
+
+	measure 'Portfolio YTD Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [YTD Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: c81718db-c1c2-4623-ac4b-fadc28222cd5
+
+	measure 'Portfolio 1Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [1Year Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: 1bcc5edf-64ae-4d38-b9f3-3ecba2b36d09
+
+	measure 'Portfolio 1Month Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [1Month Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: 0d3874e4-4d82-4703-93dd-558963e8e8fe
+
+	measure 'Portfolio 3Month Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [3Month Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: 12ee6bd9-8547-4faf-9607-54f0813eb4bf
+
+	measure 'Benchmark YTD Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [YTD Return]),
+			    Tickers[Type] = "Benchmark"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 17c8b5a7-e1a8-4232-8944-dfebb6a79d76
+
+	measure 'Benchmark 1Month Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [1Month Return]),
+			    Tickers[Type] = "Benchmark"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: c6711ccd-aeef-4517-a317-3b3dc93c7565
+
+	measure 'Benchmark 3Month Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [3Month Return]),
+			    Tickers[Type] = "Benchmark"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: f8ac01f8-16a6-4cda-a561-ccb05350f649
+
+	measure 'Benchmark 1Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [1Year Return]),
+			    Tickers[Type] = "Benchmark",
+			    REMOVEFILTERS(Tickers)
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 2cd74b7e-80cc-4c36-864f-a51c7410dd81
+
+	measure 'Benchmark Total Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [Total Return]),
+			    Tickers[Type] = "Benchmark",
+			    REMOVEFILTERS(Tickers)
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 4f5652ff-2a84-49f3-8714-cddc21460a33
+
+	measure 'Percentage Point Difference' =
+			
+			var num = ([Portfolio Total Return] - [Benchmark Total Return]) * 100
+			
+			// RETURN IF(num >= 0, "+" & FORMAT(num, "0.00"), "-" & FORMAT(num, "0.00"))
+			RETURN num
+		displayFolder: Random
+		lineageTag: 01fd3a8a-4f20-416d-a7b4-f67c4f49f73c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Initial Date' = CALCULATE(MIN('Date'[Date]), REMOVEFILTERS('Date'))
+		formatString: Short Date
+		displayFolder: Date
+		lineageTag: b478b656-9186-4e8d-8e08-0b91585d7cce
+
+	measure 'Most Recent Date' = MAX('Date'[Date])
+		formatString: Short Date
+		displayFolder: Date
+		lineageTag: 65c1b914-8a86-4661-917e-c6e46bdcfd2b
+
+	measure 'Holding days' = DATEDIFF([Initial Date], [Most Recent Date], DAY)
+		formatString: 0
+		displayFolder: Date
+		lineageTag: 0303684e-c12f-475b-a87c-aa6b056357ec
+
+	measure 'Outperforming Stock Count' =
+			
+			var benchmark = [Benchmark Total Return]
+			
+			var _count = COUNTX(
+			    FILTER(
+			        VALUES(Tickers[ticker]),
+			        [Portfolio Total Return] > benchmark
+			    ),
+			    1
+			)
+			RETURN (_count & " Stocks Outperformed The Benchmark Of " & FORMAT([Benchmark Total Return], "0.0000")*100 & "%")
+		displayFolder: Random
+		lineageTag: a6ea8280-7bfd-4719-aeb6-02fd022b04d1
+
+	measure 'Stock Percentage of Total Return' =
+			
+			
+			var sumOfReturns = SUMX(
+			    CALCULATETABLE(Tickers, Tickers[Type] = "Stock"),
+			    [Total Return]
+			)
+			
+			var PercentageOfReturns = SUMX(
+			    CALCULATETABLE(Tickers, Tickers[Type] = "Stock"),
+			    DIVIDE([Total Return], sumOfReturns)
+			)
+			RETURN PercentageOfReturns
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: 382286f4-d7bc-448f-b7d6-efc2ef5972d8
+
+	measure 'Avg Of Top 3 Tickers' = ```
+			
+			var stockTickers = FILTER(ALLSELECTED(Tickers), CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			var top3 = TOPN(3, stockTickers, [Portfolio Total Return], DESC)
+			
+			RETURN AVERAGEX(top3, [Portfolio Total Return])
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random Card Measures
+		lineageTag: ff1f5e49-ab71-4206-b88b-0303b9927c1c
+
+	measure 'Sum Of Bottom 3 Tickers' =
+			
+			var stockTickers = FILTER(ALLSELECTED(Tickers), CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			var top3 = TopN(3, stockTickers, [Portfolio Total Return], ASC)
+			
+			RETURN SUMX(top3, [Portfolio Total Return])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: 4f257bad-c767-4e43-a637-374d922a02d2
+
+	measure 'Avg Without Top 2 Tickers' =
+			
+			var stockTickers = FILTER(ALLSELECTED(Tickers), CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			var numOfTickers = COUNTROWS(stockTickers)
+			
+			var topTickerswithout2 = TOPN(numOfTickers-2, stockTickers, [Portfolio Total Return], ASC)
+			
+			RETURN AVERAGEX(topTickerswithout2, [Portfolio Total Return])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random Card Measures
+		lineageTag: 8560684e-fe3c-42ac-bb12-043509dbc534
+
+	measure 'Avg Without Bottom 2 Tickers' = ```
+			
+			var stockTickers = FILTER(
+			    ALLSELECTED(tickers), 
+			    CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock"
+			)
+			
+			var numOfTickers = COUNTROWS(StockTickers)
+			
+			var topTickerswithout2 = TOPN(numOfTickers-2, stockTickers, [Portfolio Total Return], DESC)
+			
+			RETURN AVERAGEX(topTickerswithout2, [Portfolio Total Return])
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random Card Measures
+		lineageTag: 8e77823f-ba8b-4cad-8191-fe631c624b85
+
+	measure 'Comparison Colors (Benchmark/Portfolio)' = ```
+			
+			    SWITCH(TRUE(), 
+			        SELECTEDVALUE(Tickers[ticker]) = "SPY", "#000000",
+			        [Portfolio Total Return] >= [Benchmark Total Return], "#118DFF",
+			        [Portfolio Total Return] < [Benchmark Total Return] && [Portfolio Total Return] >= 0, "#A0D1FF",
+			        [Portfolio Total Return] < 0, "#D64550"
+			    )
+			```
+		displayFolder: Colors
+		lineageTag: e5019a9f-4596-487c-834b-ee9df88e4a63
+
+	measure 'Annualized Volatility' =
+			
+			STDEVX.S(
+			    VALUES(Data_ohlc[date]),
+			    CALCULATE(AVERAGE(Data_ohlc[daily_return]))
+			) * SQRT(252)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: a37ba103-1876-4841-a598-8e5d9a10039d
+
+	measure 'Annualized Return' =
+			
+			var years = DIVIDE([Holding days], 365.25)
+			
+			RETURN (1 + [Total Return])^(1/years)-1
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: 7ca6a69f-0a6f-409d-85fb-0a25a278b556
+
+	measure 'Benchmark Annualized Return' = CALCULATE([Annualized Return], Tickers[Type] = "Benchmark")
+		displayFolder: Benchmark Returns
+		lineageTag: 5e10b9fa-37a3-4416-aef8-16869854151e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Benchmark Annualized Volatility' = CALCULATE([Annualized Volatility], Tickers[Type] = "Benchmark")
+		displayFolder: Benchmark Returns
+		lineageTag: 10091deb-395f-4e16-86af-48157d7e3ea1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 2 Percentage of total gain' =
+			
+			var stockTickers = FILTER(ALLSELECTED(Tickers), CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			var top2 = TOPN(2, stockTickers, [Portfolio Total Return], DESC)
+			
+			var sumOfTop2Stock = SUMX(top2, [Total Return])
+			var sumOfStock = SUMX(stockTickers, [Total Return])
+			
+			RETURN DIVIDE(sumOfTop2Stock,sumOfStock)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: ff242dc5-90be-4316-b843-42128bd9ad4d
+
+	measure 'Portfolio Volatility' = ```
+			
+			var stockTickers = FILTER(ALLSELECTED(Tickers), CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			var portfolioDailyReturns = 
+			    ADDCOLUMNS(
+			        VALUES('Date'[Date]),
+			        "@PortfolioReturn",
+			            var currentDate = 'Date'[Date]
+			            RETURN
+			                AVERAGEX(
+			                    stockTickers,
+			                    CALCULATE(
+			                        AVERAGE(Data_ohlc[daily_return]),
+			                        'Date'[Date] = currentDate
+			                    )
+			                )
+			    )
+			
+			RETURN 
+			    STDEVX.S(
+			        portfolioDailyReturns,
+			        [@PortfolioReturn]
+			    ) * SQRT(252)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: c5057154-0988-4f59-afa1-1ea0b43a38f5
+
+	measure 'Avg Holding Volatility' =
+			
+			var stockTickers = FILTER(Tickers, CALCULATE(SELECTEDVALUE(Tickers[Type])) = "Stock")
+			
+			RETURN AVERAGEX(stockTickers, [Annualized Volatility])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: 77a3b4ae-6dc9-4507-a41d-09b7d728c1d7
+
+	measure 'Benchmark Volatility' = CALCULATE([Annualized Volatility], Tickers[Type] = "Benchmark")
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 644b77da-6461-4855-a648-63c45f875cb3
+
+	measure 'Diversification Benefit' = 1-DIVIDE([Portfolio Volatility], [Avg Holding Volatility])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Random
+		lineageTag: ac69dac3-545f-4ee9-a7ed-53250eb3330d
+
+	measure 'Avg Without Top 2 - Benchmark' = ([Avg Without Top 2 Tickers] - [Benchmark Total Return]) *100
+		displayFolder: Random Card Measures
+		lineageTag: c3aa6919-a45d-46a5-9447-8921c2103219
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Peak =
+			
+			var curDate = MAX('Date'[Date])
+			
+			RETURN
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED('Date'[Date]),
+			            'Date'[Date] <= curDate
+			        ),
+			        1 + [Total Return]
+			    )
+		displayFolder: Random
+		lineageTag: f5bda671-9266-4152-b881-71a80632ed5f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Drawdown = ```
+			
+			DIVIDE(
+			    1 + [Total Return],
+			    [Peak]
+			) - 1
+			
+			```
+		displayFolder: Random
+		lineageTag: 539894f9-eb0a-4ff1-87c9-8817b2aaf176
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Portfolio Drawdown' =
+			
+			VAR curDate = MAX('Date'[Date])
+			VAR curReturn = [Portfolio Total Return]
+			VAR peakReturn =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED('Date'[Date]),
+			            'Date'[Date] <= curDate
+			        ),
+			        CALCULATE([Portfolio Total Return])
+			    )
+			RETURN
+			    DIVIDE(
+			        1 + curReturn,
+			        1 + peakReturn
+			    ) - 1
+		displayFolder: Portfolio
+		lineageTag: 59fb2a7d-0bb5-4455-a3e1-cc55572d5a4d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Benchmark Drawdown' = ```
+			
+			VAR curDate = MAX('Date'[Date])
+			VAR curReturn = [Total Return]
+			VAR peakReturn =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED('Date'[Date]),
+			            'Date'[Date] <= curDate
+			        ),
+			        CALCULATE([Total Return])
+			    )
+			RETURN
+			    DIVIDE(
+			        1 + curReturn,
+			        1 + peakReturn
+			    ) - 1
+			
+			```
+		displayFolder: Benchmark Returns
+		lineageTag: 4b2c6512-c81e-4339-82a5-e36d2e384d66
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '2Year Return' =
+			
+			
+			VAR curDate = MAX(Data_ohlc[date])
+			
+			var prevYearTarget = EDATE(curDate, -24)
+			
+			var prevYear = CALCULATE(
+			    MIN(Data_ohlc[date]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] >= prevYearTarget,
+			    Data_ohlc[date] <= curDate
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = prevYear
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = curDate
+			)
+			
+			RETURN IF(NOT ISBLANK(maxValue) && NOT ISBLANK(minValue),
+			    DIVIDE(maxValue, minValue)-1)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: 7ff6759a-104b-46bc-b09e-7045dbb4615b
+
+	measure '3Year Return' =
+			
+			
+			VAR curDate = MAX(Data_ohlc[date])
+			
+			var prevYearTarget = EDATE(curDate, -36)
+			
+			var prevYear = CALCULATE(
+			    MIN(Data_ohlc[date]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] >= prevYearTarget,
+			    Data_ohlc[date] <= curDate
+			)
+			
+			var minValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = prevYear
+			)
+			
+			var maxValue = CALCULATE(
+			    MAX(Data_ohlc[close]),
+			    REMOVEFILTERS('Date'),
+			    Data_ohlc[date] = curDate
+			)
+			
+			RETURN IF(NOT ISBLANK(maxValue) && NOT ISBLANK(minValue),
+			    DIVIDE(maxValue, minValue)-1)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Ticker Returns
+		lineageTag: 6d8d8cf9-84ef-4a15-a08e-538866c35034
+
+	measure 'Comparison Color YTD' =
+			
+			VAR benchmark_value = CALCULATE([YTD Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [YTD Return] >= benchmark_value, "#118DFF",
+			    [YTD Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: 046ec37c-8046-4674-8bb0-d655583d41e9
+
+	measure 'Comparison Color 3 Month' =
+			
+			VAR benchmark_value = CALCULATE([3Month Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [3Month Return] >= benchmark_value, "#118DFF",
+			    [3Month Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: c0ccc9c8-fb58-4353-81ce-03f51a307031
+
+	measure 'Comparison Color 1 Month' =
+			
+			VAR benchmark_value = CALCULATE([1Month Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [1Month Return] >= benchmark_value, "#118DFF",
+			    [1Month Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: 83cae010-6f42-4780-9bd7-3780d18aecd0
+
+	measure 'Comparison Color 1 Year' =
+			
+			VAR benchmark_value = CALCULATE([1Year Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [1Year Return] >= benchmark_value, "#118DFF",
+			    [1Year Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: 63b0b22b-6b16-4c20-94a7-82e2b2eb87a9
+
+	measure 'Comparison Color 2 Year' =
+			
+			VAR benchmark_value = CALCULATE([2Year Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [2Year Return] >= benchmark_value, "#118DFF",
+			    [2Year Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: e3e3da8a-52c6-4ab9-a523-817917a2533f
+
+	measure 'Comparison Color 3 Year' =
+			
+			VAR benchmark_value = CALCULATE([3Year Return], REMOVEFILTERS(Tickers), Tickers[Type] = "Benchmark")
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    [3Year Return] >= benchmark_value, "#118DFF",
+			    [3Year Return] < benchmark_value, "#D64550"
+			)
+		displayFolder: Colors
+		lineageTag: d14ffa77-0ce4-4668-b597-46fcd72bf21a
+
+	measure 'Portfolio label' = "Portfolio"
+		displayFolder: Portfolio
+		lineageTag: 3451377e-9d48-4138-a4fb-ba82cea1f172
+
+	measure 'Portfolio 2Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [2Year Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: 921f11ef-157b-406e-8d0f-881f25d082c1
+
+	measure 'Portfolio 3Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [3Year Return]),
+			    Tickers[Type] = "Stock"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Portfolio
+		lineageTag: 5fb0459b-ac85-4704-9783-302688d1b445
+
+	measure 'Benchmark 2Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [2Year Return]),
+			    Tickers[Type] = "Benchmark"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 6e54c1da-22cc-4bb8-be12-4261d9ab788b
+
+	measure 'Benchmark 3Year Return' =
+			CALCULATE(
+			    AVERAGEX(
+			    VALUES(Tickers[ticker]),
+			    [3Year Return]),
+			    Tickers[Type] = "Benchmark"
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Benchmark Returns
+		lineageTag: 90cba1e7-21bb-4153-a8b9-363156e3bf04
+
+	measure 'Benchmark label' = "Benchmark"
+		displayFolder: Benchmark Returns
+		lineageTag: 832aabef-ca9b-4def-a344-fcd6742940d7
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

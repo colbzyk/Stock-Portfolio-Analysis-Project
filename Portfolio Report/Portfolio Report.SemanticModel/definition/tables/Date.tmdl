@@ -1,0 +1,58 @@
+table Date
+	lineageTag: e384adfe-2fad-4fe6-8e01-86bf8171310f
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: Short Date
+		lineageTag: 9f6b039c-f016-41d9-9511-436d8e001d91
+		isDefaultLabel
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: e629bce5-13b2-40b9-9659-5ab410a6e9af
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: badf081c-8e27-4871-9f67-9912b5492bfa
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Num
+		formatString: 0
+		lineageTag: df07067c-423f-47d3-8a4c-92313d0c9582
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month_Num]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date = calculated
+		mode: import
+		source =
+				
+				var _date = CALENDAR(MIN(Data_ohlc[date]), MAX(Data_ohlc[date]))
+				
+				RETURN
+				    ADDCOLUMNS(
+				        _date,
+				
+				        "Year", YEAR([Date]),
+				        "Month_Num", MONTH([Date]),
+				        "Month", FORMAT([Date], "MMMM")
+				    )
+
+	annotation PBI_Id = 8c1051cde50144b9b93707adb4fc5493
+
