@@ -37,7 +37,7 @@ The dashboard analyzes an **equal-weight portfolio of 8 stocks** (AMZN, CAT, JPM
 
 ### Page 1: Portfolio Performance and Comparison
 
-***IMAGE 1***
+<img width="2000" height="1124" alt="image" src="https://github.com/user-attachments/assets/acd18a9a-cfd7-4d1a-9849-3d6ca3479d19" />
 
 The overview page shows the portfolio and benchmark side by side:
 
@@ -48,7 +48,7 @@ The overview page shows the portfolio and benchmark side by side:
 
 ### Page 2: Risk and Return Breakdown
 
-***IMAGE 2***
+<img width="2006" height="1122" alt="image" src="https://github.com/user-attachments/assets/5ccd2cf1-e79e-43ce-8f12-3260a7325322" />
 
 This page looks at what drove the portfolio's return and how much risk it took:
 
@@ -61,7 +61,7 @@ This page looks at what drove the portfolio's return and how much risk it took:
 
 ### Page 3: Holdings Over Time Frames
 
-***IMAGE 3***
+<img width="1994" height="1124" alt="image" src="https://github.com/user-attachments/assets/6ac27475-b110-42d6-aa0b-b74f07199ac9" />
 
 This page compares each holding to the benchmark across multiple time frames:
 
